@@ -1,4 +1,4 @@
-package com.example.imran.vollyexample;
+package com.example.imran.vollyexample.ui;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +18,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.imran.vollyexample.R;
 import com.example.imran.vollyexample.app.AppController;
 
 import org.json.JSONArray;
@@ -25,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -171,9 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     hidepDialog();
                 }
-
                 txtResponse.setText(stringBuilder);
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -200,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 VolleyLog.wtf(response, "utf-8");
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-
             }
 
         }, errorListener) {
@@ -215,8 +212,6 @@ public class MainActivity extends AppCompatActivity {
 
                 params.put("name", "Anupam");
                 params.put("job", "Android Developer");
-
-
                 return params;
             }
 
@@ -229,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
 
         };
 
-
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", "JournalDev.com");
@@ -237,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(uri, jsonObject, new Response.Listener<JSONObject>() {
             @Override
@@ -256,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 return Priority.NORMAL;
             }
         };
-
 
         StringRequest stringRequestPOSTJSON = new StringRequest(Request.Method.POST, uri, new Response.Listener<String>() {
             @Override
@@ -290,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
 
                 String requestBody = jsonObject.toString();
 
-
                 try {
                     return requestBody == null ? null : requestBody.getBytes("utf-8");
                 } catch (UnsupportedEncodingException uee) {
@@ -298,16 +289,11 @@ public class MainActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
-
         };
 
         AppController.getInstance().addToRequestQueue(stringRequest);
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
         AppController.getInstance().addToRequestQueue(stringRequestPOSTJSON);
-        //   queue.add(stringRequest);
-        //   queue.add(jsonObjectRequest);
-        // queue.add(stringRequestPOSTJSON);
     }
 
     private void showpDialog() {
@@ -350,14 +336,10 @@ public class MainActivity extends AppCompatActivity {
                 params.put("name", "Imran");
                 params.put("domain", "http://itsalif.info");
                 params.put("address", "221/Baker street");
-
                 return params;
             }
-
-
         };
         AppController.getInstance().addToRequestQueue(postRequest);
-
     }
 
     private void registration() throws JSONException {
@@ -377,6 +359,5 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         AppController.getInstance().addToRequestQueue(jsonObjectPostRequest);
-
     }
 }
