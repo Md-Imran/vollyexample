@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.imran.vollyexample.R;
 import com.example.imran.vollyexample.app.AppController;
+import com.example.imran.vollyexample.model.CustomUser;
 import com.example.imran.vollyexample.model.UserList;
 
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private String DATA_SET_BASE_URL = "https://reqres.in";
     private String CUSTOM_URL = "https://www.reqres.in/api/users?page=2";
     int numberOfRequestsCompleted;
-
+    private List<CustomUser> customUserList = new ArrayList<>();
     private static String TAG = MainActivity.class.getSimpleName();
     private Button btnMakeObjectRequest, btnMakeArrayRequest, btnPostRequest, btnLodeData;
 
@@ -341,20 +343,20 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray ja_data = jsonObj.getJSONArray("data");
                             int length = jsonObj.length();
                             for (int i = 0; i < length; i++) {
-                                JSONObject ja_dataJSONObject = ja_data.getJSONObject(i);
-                                Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("id").toString(), Toast.LENGTH_LONG).show();
+                                JSONObject jobj = ja_data.getJSONObject(i);
+                                CustomUser customUser = new CustomUser();
+                                customUser.setId(jobj.getString("id").toString());
+                                customUser.setFirst_name(jobj.getString("first_name").toString());
+                                customUser.setLast_name(jobj.getString("last_name").toString());
+                                customUser.setAvatar(jobj.getString("avatar").toString());
+                                customUserList.add(customUser);
+                                /* Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("id").toString(), Toast.LENGTH_LONG).show();
                                 Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("first_name").toString(), Toast.LENGTH_LONG).show();
                                 Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("last_name").toString(), Toast.LENGTH_LONG).show();
                                 Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("avatar").toString(), Toast.LENGTH_LONG).show();
+                        */
                             }
 
-                           /* String id = response.getString("id");
-                            String first_name = response.getString("first_name");
-                            String last_name = response.getString("last_name");
-                            String avatar = response.getString("avatar");*/
-
-
-                            // txtResponse.setText(stringBuilder);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), "Got Jeson Exception" + e.toString(), Toast.LENGTH_SHORT).show();

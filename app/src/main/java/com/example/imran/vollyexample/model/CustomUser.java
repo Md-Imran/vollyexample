@@ -14,6 +14,11 @@ public class CustomUser implements Parcelable {
     private String last_name;
     private String avatar;
 
+
+    public CustomUser() {
+
+    }
+
     public static final Creator<CustomUser> CREATOR = new Creator<CustomUser>() {
         @Override
         public CustomUser createFromParcel(Parcel in) {
