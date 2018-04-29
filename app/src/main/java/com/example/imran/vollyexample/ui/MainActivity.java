@@ -1,6 +1,7 @@
 package com.example.imran.vollyexample.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private String DATA_SET_BASE_URL = "https://reqres.in";
     private String CUSTOM_URL = "https://www.reqres.in/api/users?page=2";
     int numberOfRequestsCompleted;
-    private List<CustomUser> customUserList = new ArrayList<>();
+    private ArrayList<CustomUser> customUserList = new ArrayList<>();
     private static String TAG = MainActivity.class.getSimpleName();
     private Button btnMakeObjectRequest, btnMakeArrayRequest, btnPostRequest, btnLodeData;
 
@@ -337,13 +338,13 @@ public class MainActivity extends AppCompatActivity {
                             String total = response.getString("total");
                             String total_pages = response.getString("total_pages");
                             String data = response.getString("data");
+                            JSONArray jsonArray = new JSONArray(data);
 
-                            JSONObject jsonObj = new JSONObject(data);
-
-                            JSONArray ja_data = jsonObj.getJSONArray("data");
-                            int length = jsonObj.length();
+                            //JSONObject jsonObj = new JSONObject(data);
+                            //JSONArray ja_data = jsonObj.getJSONArray("data");
+                            int length = jsonArray.length();
                             for (int i = 0; i < length; i++) {
-                                JSONObject jobj = ja_data.getJSONObject(i);
+                                JSONObject jobj = jsonArray.getJSONObject(i);
                                 CustomUser customUser = new CustomUser();
                                 customUser.setId(jobj.getString("id").toString());
                                 customUser.setFirst_name(jobj.getString("first_name").toString());
@@ -357,6 +358,9 @@ public class MainActivity extends AppCompatActivity {
                         */
                             }
 
+                            Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
+                            intent.putParcelableArrayListExtra("UserList", customUserList);
+                            startActivity(intent);
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), "Got Jeson Exception" + e.toString(), Toast.LENGTH_SHORT).show();
