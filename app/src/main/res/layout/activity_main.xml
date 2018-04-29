@@ -45,4 +45,16 @@
         android:paddingRight="15dp"
         android:text="String Post Resquest" />
 
+
+    <Button
+        android:id="@+id/btnLodeData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/btnPostRequest"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="Load data with recyclerview" />
 </RelativeLayout>

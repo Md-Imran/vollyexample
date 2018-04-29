@@ -1,31 +1,37 @@
 package com.example.imran.vollyexample.ui;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.imran.vollyexample.R;
 import com.example.imran.vollyexample.app.AppController;
+import com.example.imran.vollyexample.model.UserList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,9 +42,13 @@ public class MainActivity extends AppCompatActivity {
     private String BASE_URL = "https://reqres.in";
     // json array response url
     private String urlJsonArry = "https://api.androidhive.info/volley/person_array.json";
+    private ArrayList<UserList.UserDataList> mUserDataList = new ArrayList<>();
+    private String DATA_SET_BASE_URL = "https://reqres.in";
+    private String CUSTOM_URL = "https://www.reqres.in/api/users?page=2";
+    int numberOfRequestsCompleted;
 
     private static String TAG = MainActivity.class.getSimpleName();
-    private Button btnMakeObjectRequest, btnMakeArrayRequest, btnPostRequest;
+    private Button btnMakeObjectRequest, btnMakeArrayRequest, btnPostRequest, btnLodeData;
 
 
     // Progress dialog
@@ -57,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private void bindView() {
         btnMakeObjectRequest = (Button) findViewById(R.id.btnObjRequest);
         btnMakeArrayRequest = (Button) findViewById(R.id.btnArrayRequest);
+        btnLodeData = (Button) findViewById(R.id.btnLodeData);
         btnPostRequest = (Button) findViewById(R.id.btnPostRequest);
         txtResponse = (TextView) findViewById(R.id.txtResponse);
 
@@ -95,6 +106,15 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        btnLodeData.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                getCustomRequest();
+
             }
         });
     }
@@ -296,6 +316,68 @@ public class MainActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(stringRequestPOSTJSON);
     }
 
+
+    private void getCustomRequest() {
+        showpDialog();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, CUSTOM_URL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        try {
+
+                            /*page	2
+                            per_page	3
+                            total	12
+                            total_pages*/
+                            String page = response.getString("page");
+                            String per_page = response.getString("per_page");
+                            String total = response.getString("total");
+                            String total_pages = response.getString("total_pages");
+                            String data = response.getString("data");
+
+                            JSONObject jsonObj = new JSONObject(data);
+
+                            JSONArray ja_data = jsonObj.getJSONArray("data");
+                            int length = jsonObj.length();
+                            for (int i = 0; i < length; i++) {
+                                JSONObject ja_dataJSONObject = ja_data.getJSONObject(i);
+                                Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("id").toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("first_name").toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("last_name").toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, ja_dataJSONObject.getString("avatar").toString(), Toast.LENGTH_LONG).show();
+                            }
+
+                           /* String id = response.getString("id");
+                            String first_name = response.getString("first_name");
+                            String last_name = response.getString("last_name");
+                            String avatar = response.getString("avatar");*/
+
+
+                            // txtResponse.setText(stringBuilder);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Got Jeson Exception" + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        hidepDialog();
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                // hide the progress dialog
+                hidepDialog();
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
+    }
+
+
     private void showpDialog() {
         if (!pDialog.isShowing())
             pDialog.show();
@@ -360,4 +442,6 @@ public class MainActivity extends AppCompatActivity {
         };
         AppController.getInstance().addToRequestQueue(jsonObjectPostRequest);
     }
+
+
 }
